@@ -1,0 +1,90 @@
+def field(pos):
+    for i in range(3):
+        print(pos[0 + i * 3], '|', pos[1 + i * 3], '|', pos[2 + i * 3])
+        if i != 2:
+            print('---------------------')
+
+
+print('Type your name, participants:')
+winCount = [[input(), 0], [input(), 0]]
+while True:
+    # win condition matrix for each player
+    checkList = (1, 2, 3, 4, 5, 6, 7, 8, 9)
+    winCondForPl1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 5, 9], [3, 5, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9]]
+    winCondForPl2 = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 5, 9], [3, 5, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9]]
+    gameFieldView = ['*', '*', '*', '*', '*', '*', '*', '*', '*']
+    turns = 0
+    gameEnd = False
+# game preparations
+    while True:
+        print('Choose your side,', winCount[0][0], ': X or O')
+        Player1 = input()
+        if Player1 == 'X':
+            print(winCount[1][0], 'picked zeroes:')
+            Player2 = 'O'
+            break
+        else:
+            if Player1 == 'O':
+                turns += 1
+                print(winCount[1][0], 'picked crosses:')
+                Player2 = 'X'
+                break
+
+# game starting
+    while True:
+        if turns > 9:
+            print('DRAW')
+            break
+# checking for inputs to be valid
+        if turns % 2 == 0:
+            print('Your turn', winCount[0][0])
+            turn = int(input())
+            if Player2 in gameFieldView[turn - 1] or turn not in checkList:
+                continue
+            gameFieldView.insert(turn - 1, Player1)
+        else:
+            print('Your turn', winCount[1][0])
+            turn = int(input())
+            if Player1 in gameFieldView[turn - 1] or turn not in checkList:
+                continue
+            gameFieldView.insert(turn - 1, Player2)
+# drawing gameField
+        gameFieldView.pop(turn)
+        field(gameFieldView)
+# winning condition check
+        if turns % 2 == 0:
+            for elem in winCondForPl1:
+                try:
+                    elem.remove(turn)
+                except ValueError:
+                    continue
+                if not any(elem):
+                    print(winCount[0][0], 'WON!!!')
+                    gameEnd = True
+                    winCount[0][1] += 1
+                    break
+            if gameEnd:
+                break
+        else:
+            for elem in winCondForPl2:
+                try:
+                    elem.remove(turn)
+                except ValueError:
+                    continue
+                if not any(elem):
+                    print(winCount[1][0], 'WON!!!')
+                    winCount[1][1] += 1
+                    gameEnd = True
+                    break
+            if gameEnd:
+                break
+# raising turns number to
+        turns += 1
+# check if Players wish to continue
+    print(winCount[0][0], '-', winCount[0][1])
+    print(winCount[1][0], '-', winCount[1][1])
+    print('Do you want to Continue?', 'Type: Y/N', sep='\n')
+    if input() == 'Y':
+        continue
+    else:
+        break
